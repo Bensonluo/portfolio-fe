@@ -1,0 +1,21 @@
+services:
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    container_name: portfolio-fe
+    ports:
+      - "3000:80"
+    environment:
+      # Empty string means use relative paths (for nginx proxy)
+      # When using host nginx proxy, API requests go to /api/v1/...
+      - NEXT_PUBLIC_API_URL=
+    networks:
+      - app-network
+    restart: unless-stopped
+    # IMPORTANT: No volume mount needed - built files are in the image
+    # The old volume mount (./out:/usr/share/nginx/html) was overriding built files
+
+networks:
+  app-network:
+    driver: bridge
