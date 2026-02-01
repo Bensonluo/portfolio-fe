@@ -40,7 +40,7 @@ export function ChatInterfaceUpdated() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Hello! I\'m a RAG chatbot. Ask me about project architecture, features, or try any question!',
+      content: 'Hello! I\'m a RAG chatbot. Ask me about anything！',
       timestamp: new Date().toISOString(),
     },
   ]);
@@ -256,7 +256,7 @@ export function ChatInterfaceUpdated() {
                 <p className="text-xs text-muted-foreground">
                   {apiStatus === 'online' 
                     ? "Connected to live RAG API" 
-                    : "Try asking about: <strong>architecture</strong>, <strong>features</strong>, <strong>RAG</strong>, <strong>tech stack</strong>"
+                    : ""
                   }
                 </p>
                 {apiStatus === 'offline' && (

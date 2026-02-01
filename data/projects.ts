@@ -4,26 +4,36 @@ export const projects: Project[] = [
   {
     slug: 'rag-chatbot',
     title: 'RAG Chatbot',
-    description: 'Production-grade RAG chatbot with intelligent intent detection and memory management',
-    longDescription: `Production-ready RAG chatbot built with FastAPI, featuring intelligent intent detection,
-    memory management, and hybrid vector search. This system demonstrates enterprise-grade architecture with
-    comprehensive testing, monitoring, and deployment configurations.
+    description: 'RAG chatbot with intent-based retrieval, optimized memory (60–70% token savings), and hybrid search',
+    longDescription: `RAG chatbot built with FastAPI, featuring intent-based retrieval (skips vector search for small talk),
+    optimized memory with relevance filtering (60–70% token savings vs sliding window), and hybrid search (vector + BM25 with RRF).
 
-    The chatbot supports multiple LLM providers (OpenAI, Anthropic, GLM), hybrid search combining semantic
-    and keyword matching, and advanced features like streaming responses, JWT authentication, and rate limiting.`,
+    Key aspects: BGE-M3 local embeddings (free), Redis embedding cache, LLM reranking (top 50 → top 5),
+    multiple chunking strategies (fixed, semantic, recursive), and 335+ tests with 80%+ coverage.`,
     tags: ['RAG', 'FastAPI', 'Vector Search', 'LLM', 'Docker'],
     coverImage: '/images/projects/rag-cover.png',
     demoType: 'interactive',
     featured: true,
+    stats: {
+      'Test Coverage': '80%+',
+      'Test Cases': '335+',
+      'Memory Strategies': '4',
+      'LLM Providers': '3',
+    },
     capabilities: [
-      'Hybrid Vector + BM25 Search',
-      'Intent Detection (Rule + LLM)',
-      'Memory Management Strategies',
+      'Document Ingestion (PDF, TXT, MD)',
+      'Multiple Chunking Strategies (fixed, semantic, recursive)',
+      'Intent-Based Retrieval (skips search for greetings)',
+      'Optimized Memory (60–70% token savings)',
+      'Hybrid Search (Vector + BM25 RRF)',
+      'LLM Reranking (top 50 → top 5)',
+      'BGE-M3 Local Embeddings (free)',
+      'Redis Embedding Cache',
       'Streaming Responses',
-      'Multi-LLM Support',
-      'JWT Authentication',
+      'Multi-LLM (OpenAI, Anthropic, GLM)',
+      'JWT Auth & Rate Limiting',
     ],
-    githubUrl: 'https://github.com/PengLuo-TR/rag_chatbot',
+    githubUrl: 'https://github.com/Bensonluo/rag_chatbot',
     techStack: [
       'Python',
       'FastAPI',
@@ -38,14 +48,12 @@ export const projects: Project[] = [
   {
     slug: '4bit-qlora-post-training',
     title: '4-bit QLoRA Post-Training',
-    description: 'Efficient LLM fine-tuning using quantized low-rank adaptation for consumer GPUs',
-    longDescription: `A complete 4-bit QLoRA framework for fine-tuning Large Language Models on consumer GPUs.
-    This project demonstrates production-ready ML engineering with comprehensive testing, monitoring, and
-    cross-platform training workflows.
+    description: '4-bit QLoRA fine-tuning for LLMs on consumer GPUs — SFT, DPO, domain adaptation',
+    longDescription: `A 4-bit QLoRA framework for fine-tuning LLMs on consumer GPUs (e.g., RTX 4060 8GB).
+    Implements SFT, Domain Adaptation, and DPO with testing, logging, and cross-platform workflows.
 
-    Key innovations include 84% memory reduction through NF4 quantization while maintaining model quality,
-    support for multiple training techniques (SFT, Domain Adaptation, DPO), and a finance domain specialization
-    that showcases practical LLM applications.`,
+    Key aspects: 84% memory reduction via NF4 quantization, multiple fine-tuning techniques,
+    and a finance domain specialization as a practical use case.`,
     tags: ['LLM', 'PyTorch', 'QLoRA', 'Transformers', 'DPO', 'MLOps'],
     coverImage: '/images/projects/qlora-cover.png',
     demoType: 'visualization',
@@ -56,7 +64,7 @@ export const projects: Project[] = [
       'Min VRAM': '8GB (RTX 4060)',
       'Training Time': '14s (quick test)',
     },
-    githubUrl: 'https://github.com/PengLuo-TR/4bit-QLoRA-post-training',
+    githubUrl: 'https://github.com/Bensonluo/4bit-QLoRA-post-training',
     techStack: [
       'Python',
       'PyTorch',

@@ -1,18 +1,21 @@
 'use client';
 
-import { useState } from 'react';
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card';
 import { Badge } from '@/components/ui/badge';
-import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import { motion } from 'framer-motion';
 
 interface QLoRADemoProps {
   stats?: Record<string, string>;
 }
 
-export function QLoRADemo({ stats }: QLoRADemoProps) {
-  const [activeTab, setActiveTab] = useState<'overview' | 'architecture' | 'techniques' | 'code'>('overview');
+const SECTIONS = [
+  { id: 'overview', label: 'Overview' },
+  { id: 'architecture', label: 'Architecture' },
+  { id: 'techniques', label: 'Techniques' },
+  { id: 'implementation', label: 'Implementation' },
+];
 
+export function QLoRADemo({ stats }: QLoRADemoProps) {
   return (
     <motion.div
       initial={{ opacity: 0, y: 20 }}
@@ -22,18 +25,28 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
     >
       <Card>
         <CardHeader>
-          <CardTitle>Technical Deep Dive</CardTitle>
+          <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
+            <CardTitle>Technical Deep Dive</CardTitle>
+            <nav className="flex flex-wrap gap-2 text-sm">
+              {SECTIONS.map(({ id, label }) => (
+                <a
+                  key={id}
+                  href={`#${id}`}
+                  className="text-muted-foreground hover:text-primary transition-colors underline-offset-4 hover:underline"
+                >
+                  {label}
+                </a>
+              ))}
+            </nav>
+          </div>
         </CardHeader>
-        <CardContent>
-          <Tabs value={activeTab} onValueChange={(v) => setActiveTab(v as any)}>
-            <TabsList className="grid w-full grid-cols-4">
-              <TabsTrigger value="overview">Overview</TabsTrigger>
-              <TabsTrigger value="architecture">Architecture</TabsTrigger>
-              <TabsTrigger value="techniques">Techniques</TabsTrigger>
-              <TabsTrigger value="code">Code</TabsTrigger>
-            </TabsList>
-
-            <TabsContent value="overview" className="mt-6 space-y-6">
+        <CardContent className="space-y-0">
+          {/* ─── Section 1: Overview ─── */}
+          <section id="overview" className="scroll-mt-8 py-10 border-b">
+            <h2 className="mb-6 text-2xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Overview
+            </h2>
+            <div className="space-y-8">
               <div>
                 <h3 className="mb-4 text-xl font-semibold">What is QLoRA?</h3>
                 <p className="mb-4 text-muted-foreground">
@@ -42,14 +55,11 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                 </p>
                 <div className="rounded-lg border bg-purple-50 dark:bg-purple-950/20 p-4">
                   <p className="text-sm">
-                    <strong className="text-purple-600 dark:text-purple-400">Key Innovation:</strong> Train 7B+ parameter
-                    models on GPUs with as little as 8GB VRAM, achieving <strong>84% memory reduction</strong> with
-                    minimal quality loss.
+                    <strong className="text-purple-600 dark:text-purple-400">Key Benefit:</strong> Train 7B+ parameter models on RTX 4060 GPU with as little as 8GB VRAM, achieving 84% memory reduction with minimal quality loss.
                   </p>
                 </div>
               </div>
 
-              {/* Performance Comparison */}
               <div>
                 <h4 className="mb-4 font-semibold">VRAM Comparison (7B Model)</h4>
                 <div className="space-y-3">
@@ -64,7 +74,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                       </div>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-4 rounded-lg border p-4">
                     <div className="flex-1">
                       <div className="mb-1 flex justify-between text-sm">
@@ -76,7 +85,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                       </div>
                     </div>
                   </div>
-
                   <div className="flex items-center gap-4 rounded-lg border-2 border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950/20">
                     <div className="flex-1">
                       <div className="mb-1 flex justify-between text-sm">
@@ -94,7 +102,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                 </div>
               </div>
 
-              {/* Key Features */}
               <div>
                 <h4 className="mb-4 font-semibold">Key Features</h4>
                 <div className="grid gap-3 sm:grid-cols-2">
@@ -103,7 +110,7 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                     { title: '4-bit QLoRA', desc: '84% memory reduction, minimal quality loss' },
                     { title: 'DPO Support', desc: 'Direct Preference Optimization for alignment' },
                     { title: 'Domain Adaptation', desc: 'Finance specialization demonstrated' },
-                    { title: 'Production Ready', desc: 'Tests, logging, monitoring included' },
+                    { title: 'Testable & Documented', desc: 'Tests, logging, monitoring' },
                     { title: 'Cross-Platform', desc: 'Mac dev + Windows GPU training workflow' },
                   ].map((feature) => (
                     <div key={feature.title} className="rounded-lg border p-3">
@@ -114,7 +121,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                 </div>
               </div>
 
-              {/* Training Results */}
               {stats && (
                 <div>
                   <h4 className="mb-4 font-semibold">Training Results (Qwen 0.5B)</h4>
@@ -123,7 +129,8 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                       <motion.div
                         key={key}
                         initial={{ opacity: 0, scale: 0.9 }}
-                        animate={{ opacity: 1, scale: 1 }}
+                        whileInView={{ opacity: 1, scale: 1 }}
+                        viewport={{ once: true }}
                         transition={{ duration: 0.3 }}
                         className="rounded-lg border bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 p-4"
                       >
@@ -136,17 +143,20 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                   </div>
                 </div>
               )}
-            </TabsContent>
+            </div>
+          </section>
 
-            <TabsContent value="architecture" className="mt-6 space-y-6">
-              {/* Architecture Overview */}
+          {/* ─── Section 2: Architecture ─── */}
+          <section id="architecture" className="scroll-mt-8 py-10 border-b bg-muted/30">
+            <h2 className="mb-6 text-2xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Architecture
+            </h2>
+            <div className="space-y-8">
               <div>
                 <h3 className="mb-4 text-xl font-semibold">QLoRA Architecture</h3>
                 <p className="mb-4 text-muted-foreground">
-                  QLoRA combines three key innovations to make efficient fine-tuning possible.
+                  QLoRA combines three key components to enable efficient fine-tuning.
                 </p>
-
-                {/* Architecture Diagram */}
                 <div className="rounded-lg border bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-950/20 dark:to-blue-950/20 p-6">
                   <div className="mb-4 space-y-4">
                     <div className="rounded-lg border-2 border-dashed border-purple-300 bg-white p-4 dark:border-purple-700 dark:bg-gray-900">
@@ -156,7 +166,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                       </div>
                       <p className="text-xs text-muted-foreground">Quantized weights (not trainable)</p>
                     </div>
-
                     <div className="flex justify-center">
                       <div className="flex items-center gap-2 text-xs text-muted-foreground">
                         <span>+</span>
@@ -164,7 +173,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                         <span>+</span>
                       </div>
                     </div>
-
                     <div className="grid gap-2 sm:grid-cols-2">
                       <div className="rounded-lg border-2 border-purple-300 bg-purple-50 p-3 dark:border-purple-700 dark:bg-purple-950/30">
                         <div className="mb-1 text-xs font-medium">Matrix A</div>
@@ -175,7 +183,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                         <div className="text-xs text-muted-foreground">r × d (e.g., 16 × 4096)</div>
                       </div>
                     </div>
-
                     <div className="rounded-lg border bg-white p-3 dark:bg-gray-900">
                       <div className="text-center text-xs">
                         <strong className="text-purple-600 dark:text-purple-400">Output:</strong> Frozen + Low-rank update
@@ -185,7 +192,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                 </div>
               </div>
 
-              {/* LoRA Mathematics */}
               <div>
                 <h4 className="mb-4 font-semibold">LoRA Mathematics</h4>
                 <div className="rounded-lg border bg-card p-4">
@@ -206,7 +212,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                 </div>
               </div>
 
-              {/* 4-bit NF4 Quantization */}
               <div>
                 <h4 className="mb-4 font-semibold">4-bit NF4 Quantization</h4>
                 <div className="rounded-lg border bg-card p-4">
@@ -216,33 +221,24 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                   <div className="grid gap-3 sm:grid-cols-2">
                     <div className="rounded-lg border bg-purple-50 dark:bg-purple-950/20 p-3">
                       <h5 className="mb-1 text-xs font-semibold text-purple-600 dark:text-purple-400">Normal Distribution</h5>
-                      <p className="text-xs text-muted-foreground">
-                        LLM weights follow a bell curve, not uniform
-                      </p>
+                      <p className="text-xs text-muted-foreground">LLM weights follow a bell curve, not uniform</p>
                     </div>
                     <div className="rounded-lg border bg-blue-50 dark:bg-blue-950/20 p-3">
                       <h5 className="mb-1 text-xs font-semibold text-blue-600 dark:text-blue-400">Precision Levels</h5>
-                      <p className="text-xs text-muted-foreground">
-                        16 possible values vs 65,536 (FP16)
-                      </p>
+                      <p className="text-xs text-muted-foreground">16 possible values vs 65,536 (FP16)</p>
                     </div>
                     <div className="rounded-lg border bg-indigo-50 dark:bg-indigo-950/20 p-3">
                       <h5 className="mb-1 text-xs font-semibold text-indigo-600 dark:text-indigo-400">Double Quantization</h5>
-                      <p className="text-xs text-muted-foreground">
-                        Quantize quantization constants too!
-                      </p>
+                      <p className="text-xs text-muted-foreground">Quantize quantization constants too</p>
                     </div>
                     <div className="rounded-lg border bg-pink-50 dark:bg-pink-950/20 p-3">
                       <h5 className="mb-1 text-xs font-semibold text-pink-600 dark:text-pink-400">Optimal Precision</h5>
-                      <p className="text-xs text-muted-foreground">
-                        More precision where weights concentrate (near 0)
-                      </p>
+                      <p className="text-xs text-muted-foreground">More precision where weights concentrate (near 0)</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* VRAM Breakdown */}
               <div>
                 <h4 className="mb-4 font-semibold">VRAM Usage Breakdown (Qwen 1.5B)</h4>
                 <div className="rounded-lg border bg-card p-4">
@@ -254,26 +250,11 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                       </tr>
                     </thead>
                     <tbody>
-                      <tr className="border-b">
-                        <td className="py-2">Base model (4-bit)</td>
-                        <td className="py-2 text-right font-mono">~1.8 GB</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2">LoRA adapters (r=16)</td>
-                        <td className="py-2 text-right font-mono">~0.4 GB</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2">Activations (BS=1, seq=512)</td>
-                        <td className="py-2 text-right font-mono">~1.2 GB</td>
-                      </tr>
-                      <tr className="border-b">
-                        <td className="py-2">Optimizer states</td>
-                        <td className="py-2 text-right font-mono">~0.8 GB</td>
-                      </tr>
-                      <tr>
-                        <td className="py-2 font-semibold">Total</td>
-                        <td className="py-2 text-right font-mono font-bold">~4.2 GB ✓</td>
-                      </tr>
+                      <tr className="border-b"><td className="py-2">Base model (4-bit)</td><td className="py-2 text-right font-mono">~1.8 GB</td></tr>
+                      <tr className="border-b"><td className="py-2">LoRA adapters (r=16)</td><td className="py-2 text-right font-mono">~0.4 GB</td></tr>
+                      <tr className="border-b"><td className="py-2">Activations (BS=1, seq=512)</td><td className="py-2 text-right font-mono">~1.2 GB</td></tr>
+                      <tr className="border-b"><td className="py-2">Optimizer states</td><td className="py-2 text-right font-mono">~0.8 GB</td></tr>
+                      <tr><td className="py-2 font-semibold">Total</td><td className="py-2 text-right font-mono font-bold">~4.2 GB ✓</td></tr>
                     </tbody>
                   </table>
                   <p className="mt-3 text-xs text-center text-muted-foreground">
@@ -281,18 +262,21 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                   </p>
                 </div>
               </div>
-            </TabsContent>
+            </div>
+          </section>
 
-            <TabsContent value="techniques" className="mt-6 space-y-6">
-              {/* Training Techniques */}
+          {/* ─── Section 3: Techniques ─── */}
+          <section id="techniques" className="scroll-mt-8 py-10 border-b">
+            <h2 className="mb-6 text-2xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Techniques
+            </h2>
+            <div className="space-y-8">
               <div>
                 <h3 className="mb-4 text-xl font-semibold">Training Techniques</h3>
                 <p className="mb-4 text-muted-foreground">
                   This project implements three major fine-tuning techniques:
                 </p>
-
                 <div className="space-y-4">
-                  {/* SFT */}
                   <div className="rounded-lg border-2 border-purple-200 bg-purple-50 p-4 dark:border-purple-800 dark:bg-purple-950/20">
                     <div className="mb-3 flex items-center gap-2">
                       <Badge className="bg-gradient-to-r from-purple-600 to-blue-600">SFT</Badge>
@@ -317,7 +301,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                     </div>
                   </div>
 
-                  {/* DPO */}
                   <div className="rounded-lg border-2 border-blue-200 bg-blue-50 p-4 dark:border-blue-800 dark:bg-blue-950/20">
                     <div className="mb-3 flex items-center gap-2">
                       <Badge className="bg-gradient-to-r from-blue-600 to-indigo-600">DPO</Badge>
@@ -342,7 +325,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                     </div>
                   </div>
 
-                  {/* QLoRA */}
                   <div className="rounded-lg border-2 border-indigo-200 bg-indigo-50 p-4 dark:border-indigo-800 dark:bg-indigo-950/20">
                     <div className="mb-3 flex items-center gap-2">
                       <Badge className="bg-gradient-to-r from-indigo-600 to-purple-600">QLoRA</Badge>
@@ -369,7 +351,6 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                 </div>
               </div>
 
-              {/* LoRA Hyperparameters */}
               <div>
                 <h4 className="mb-4 font-semibold">LoRA Hyperparameters</h4>
                 <div className="rounded-lg border bg-card p-4">
@@ -379,18 +360,14 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                         <span className="font-semibold text-sm">Rank (r)</span>
                         <Badge variant="secondary">r=16</Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Controls expressiveness. Higher = more parameters. Recommended for most cases.
-                      </p>
+                      <p className="text-xs text-muted-foreground">Controls expressiveness. Higher = more parameters. Recommended for most cases.</p>
                     </div>
                     <div>
                       <div className="mb-2 flex items-center gap-2">
                         <span className="font-semibold text-sm">Alpha (α)</span>
                         <Badge variant="secondary">α=32</Badge>
                       </div>
-                      <p className="text-xs text-muted-foreground">
-                        Scaling factor: α = 2r. Controls the magnitude of the update.
-                      </p>
+                      <p className="text-xs text-muted-foreground">Scaling factor: α = 2r. Controls the magnitude of the update.</p>
                     </div>
                     <div>
                       <div className="mb-2 flex items-center gap-2">
@@ -401,48 +378,42 @@ export function QLoRADemo({ stats }: QLoRADemoProps) {
                           <Badge key={mod} variant="outline" className="text-xs">{mod}</Badge>
                         ))}
                       </div>
-                      <p className="mt-2 text-xs text-muted-foreground">
-                        Attention + FFN layers for comprehensive adaptation
-                      </p>
+                      <p className="mt-2 text-xs text-muted-foreground">Attention + FFN layers for comprehensive adaptation</p>
                     </div>
                   </div>
                 </div>
               </div>
 
-              {/* Memory Optimizations */}
               <div>
                 <h4 className="mb-4 font-semibold">Memory Optimization Techniques</h4>
                 <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-lg border bg-card p-3">
                     <h5 className="mb-1 text-sm font-medium">Gradient Checkpointing</h5>
-                    <p className="text-xs text-muted-foreground">
-                      Trade compute for memory • Saves ~50% activation memory
-                    </p>
+                    <p className="text-xs text-muted-foreground">Trade compute for memory • Saves ~50% activation memory</p>
                   </div>
                   <div className="rounded-lg border bg-card p-3">
                     <h5 className="mb-1 text-sm font-medium">Mixed Precision (BF16)</h5>
-                    <p className="text-xs text-muted-foreground">
-                      Brain Float 16 • Saves ~30-40% memory
-                    </p>
+                    <p className="text-xs text-muted-foreground">Brain Float 16 • Saves ~30-40% memory</p>
                   </div>
                   <div className="rounded-lg border bg-card p-3">
                     <h5 className="mb-1 text-sm font-medium">Gradient Accumulation</h5>
-                    <p className="text-xs text-muted-foreground">
-                      Simulate BS=8 with BS=1 • Same effective batch
-                    </p>
+                    <p className="text-xs text-muted-foreground">Simulate BS=8 with BS=1 • Same effective batch</p>
                   </div>
                   <div className="rounded-lg border bg-card p-3">
                     <h5 className="mb-1 text-sm font-medium">Paged Optimizers</h5>
-                    <p className="text-xs text-muted-foreground">
-                      CPU offloading for optimizer states
-                    </p>
+                    <p className="text-xs text-muted-foreground">CPU offloading for optimizer states</p>
                   </div>
                 </div>
               </div>
-            </TabsContent>
+            </div>
+          </section>
 
-            <TabsContent value="code" className="mt-6 space-y-6">
-              {/* Training Pipeline */}
+          {/* ─── Section 4: Implementation ─── */}
+          <section id="implementation" className="scroll-mt-8 py-10 bg-muted/30">
+            <h2 className="mb-6 text-2xl font-semibold bg-gradient-to-r from-purple-600 to-blue-600 bg-clip-text text-transparent">
+              Implementation
+            </h2>
+            <div className="space-y-8">
               <div>
                 <h3 className="mb-4 text-xl font-semibold">Complete Training Pipeline</h3>
                 <div className="overflow-x-auto rounded-lg border bg-card p-4">
@@ -485,7 +456,6 @@ trainer.train()`}</code></pre>
                 </div>
               </div>
 
-              {/* Key Implementation Files */}
               <div>
                 <h4 className="mb-4 font-semibold">Project Structure</h4>
                 <div className="rounded-lg border bg-card p-4">
@@ -512,7 +482,6 @@ trainer.train()`}</code></pre>
                 </div>
               </div>
 
-              {/* Quick Start Commands */}
               <div>
                 <h4 className="mb-4 font-semibold">Quick Start</h4>
                 <div className="space-y-2">
@@ -531,10 +500,9 @@ trainer.train()`}</code></pre>
                 </div>
               </div>
 
-              {/* Tech Stack */}
               <div>
                 <h4 className="mb-4 font-semibold">Tech Stack</h4>
-                <div className="grid gap-2 sm:grid-cols-2">
+                <div className="grid gap-3 sm:grid-cols-2">
                   <div className="rounded-lg border bg-purple-50 dark:bg-purple-950/20 p-3">
                     <h5 className="mb-2 text-xs font-semibold text-purple-600 dark:text-purple-400">Core Framework</h5>
                     <div className="flex flex-wrap gap-1">
@@ -570,9 +538,8 @@ trainer.train()`}</code></pre>
                 </div>
               </div>
 
-              {/* Key Achievements */}
               <div className="rounded-lg border border-primary/20 bg-primary/5 p-4">
-                <h4 className="mb-3 font-semibold">Key Achievements</h4>
+                <h4 className="mb-3 font-semibold">Project Highlights</h4>
                 <ul className="space-y-2 text-sm">
                   <li className="flex items-start gap-2">
                     <span className="text-primary">✓</span>
@@ -584,7 +551,7 @@ trainer.train()`}</code></pre>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">✓</span>
-                    <span><strong>Production-ready code:</strong> Comprehensive tests, logging, CI/CD</span>
+                    <span><strong>Structured codebase:</strong> Tests, logging, CI/CD</span>
                   </li>
                   <li className="flex items-start gap-2">
                     <span className="text-primary">✓</span>
@@ -596,8 +563,8 @@ trainer.train()`}</code></pre>
                   </li>
                 </ul>
               </div>
-            </TabsContent>
-          </Tabs>
+            </div>
+          </section>
         </CardContent>
       </Card>
     </motion.div>

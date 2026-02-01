@@ -5,7 +5,6 @@ import Link from 'next/link';
 import { useTheme } from 'next-themes';
 import { Menu, X, Moon, Sun } from 'lucide-react';
 import { Button } from '@/components/ui/button';
-import { resume } from '@/data';
 
 const navigation = [
   { name: 'Home', href: '/' },
@@ -27,7 +26,7 @@ export function Header() {
       <nav className="mx-auto flex max-w-7xl items-center justify-between p-4 lg:px-8" aria-label="Global">
         <div className="flex lg:flex-1">
           <Link href="/" className="-m-1.5 p-1.5">
-            <span className="text-xl font-bold">{resume.name}</span>
+            <span className="text-xl font-bold">Portfolio</span>
           </Link>
         </div>
         <div className="flex lg:hidden">

@@ -1,13 +1,12 @@
 import { Resume } from '@/types/common';
 
 export const resume: Resume = {
-  name: 'Peng (Benson) Luo',
+  name: 'Peng Luo',
   title: 'Senior ML/LLM Engineer & MLOps Specialist',
   bio: `Passionate Senior LLM Engineer with 7+ years experience developing production AI/LLM systems.
   Proven expertise in developing LLMs GenAI services, and building ML infrastructure.`,
   email: 'Luopengllpp@hotmail.com',
-  location: 'China',
-  phone: '19521338577',
+  location: 'ShangHai China',
   experience: [
     {
       id: '1',
@@ -147,7 +146,7 @@ export const resume: Resume = {
     },
     {
       name: 'GitHub',
-      url: 'https://github.com/PengLuo-TR',
+      url: 'https://github.com/Bensonluo',
       icon: 'Github',
     },
     {

@@ -17,12 +17,15 @@ interface Message {
 const MOCK_RESPONSES: Record<string, string> = {
   hello: 'Hello! This is a RAG chatbot demo. I can answer questions about the project, demonstrate retrieval capabilities, and showcase the chat interface. Ask me anything!',
   hi: 'Hi there! I\'m the RAG chatbot demo. Feel free to ask me about the project architecture, features, or try any question!',
-  architecture: 'This RAG system uses a sophisticated architecture:\n\n• **Vector Search**: Qdrant vector database for semantic similarity\n• **Hybrid Search**: Combines vector search with BM25 keyword matching\n• **Intent Detection**: Hybrid rule-based + LLM-powered classification\n• **Memory Management**: Multiple strategies (sliding window, summarization, hybrid)\n• **Streaming**: Real-time server-sent events for faster response time',
+  architecture: 'This RAG system uses a sophisticated architecture:\n\n• **Intent-Based Retrieval**: Skips vector search for greetings/chitchat (saves latency)\n• **Optimized Memory**: Relevance filtering — 60–70% token savings vs sliding window\n• **Hybrid Search**: Vector + BM25 with Reciprocal Rank Fusion\n• **LLM Reranking**: Top 50 results → rerank → top 5\n• **BGE-M3 Local**: Free embeddings (no API cost)\n• **Streaming**: Real-time server-sent events',
   rag: 'RAG (Retrieval-Augmented Generation) combines the power of retrieval systems with large language models. It retrieves relevant context from a knowledge base and uses it to generate accurate, contextual responses. This approach reduces hallucinations and keeps answers grounded in actual data.',
-  features: 'Key features include:\n\n✅ Hybrid Vector + BM25 Search\n✅ Multiple Intent Detection Strategies\n✅ Flexible Memory Management\n✅ Streaming Responses\n✅ Multi-LLM Support (OpenAI, Anthropic, GLM)\n✅ JWT Authentication\n✅ Rate Limiting\n✅ Docker & Kubernetes Ready',
+  features: 'Key features include:\n\n✅ Document Ingestion (PDF, TXT, MD)\n✅ Multiple Chunking Strategies (fixed, semantic, recursive)\n✅ Intent-Based Retrieval (skips search for greetings)\n✅ Optimized Memory (60–70% token savings)\n✅ Hybrid Search (Vector + BM25 RRF)\n✅ LLM Reranking (top 50 → top 5)\n✅ BGE-M3 Local Embeddings (free)\n✅ Redis Embedding Cache\n✅ Streaming Responses\n✅ Multi-LLM (OpenAI, Anthropic, GLM)\n✅ JWT Auth & Rate Limiting',
   tech: 'Tech Stack:\n\n• **Backend**: FastAPI, Python\n• **Vector DB**: Qdrant\n• **Databases**: PostgreSQL, Redis\n• **LLM**: OpenAI, Anthropic, or GLM APIs\n• **Deployment**: Docker, Kubernetes\n• **Testing**: 335+ test cases, 80%+ coverage',
   demo: 'This is a frontend demo with placeholder responses. The full backend integrates with real LLM APIs and supports streaming responses, document upload, and advanced RAG features.',
   api: 'The API provides:\n\n• POST /api/v1/chat - Send messages\n• POST /api/v1/chat/stream - Stream responses\n• POST /api/v1/documents/upload - Upload documents\n• POST /api/v1/documents/search - Search knowledge base\n• JWT-based authentication\n• Comprehensive error handling',
+  document: '**Document Ingestion** supports PDF, TXT, and Markdown. Pipeline: Preprocess (clean, normalize) → Chunk (fixed / semantic / recursive) → Embed (BGE-M3 / GLM) → Store in Qdrant. Use POST /api/v1/documents/upload for text or /upload/file for files.',
+  ingestion: '**Document Ingestion** pipeline: 1) Preprocess — clean text, normalize whitespace. 2) Chunk — fixed (simple), semantic (paragraph boundaries), or recursive (varied structures). 3) Embed — BGE-M3 local or GLM API. 4) Store in Qdrant vector DB.',
+  chunking: '**Chunking strategies**: **Fixed** — fixed-size chunks with overlap. **Semantic** — split at paragraph/sentence boundaries, better context. **Recursive** — recursive character splitting for varied document structures. Default is semantic.',
 };
 
 const DEFAULT_RESPONSE =
@@ -40,15 +43,18 @@ export function ChatInterface() {
   const [messages, setMessages] = useState<Message[]>([
     {
       role: 'assistant',
-      content: 'Hello! I\'m a RAG chatbot demo. Ask me about the project architecture, features, or try any question!',
+      content: 'Hello! I\'m a RAG chatbot. Ask me about anything！',
     },
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
   const messagesEndRef = useRef<HTMLDivElement>(null);
+  const messagesContainerRef = useRef<HTMLDivElement>(null);
 
   const scrollToBottom = () => {
-    messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' });
+    if (messagesContainerRef.current) {
+      messagesContainerRef.current.scrollTop = messagesContainerRef.current.scrollHeight;
+    }
   };
 
   useEffect(() => {
@@ -130,7 +136,7 @@ export function ChatInterface() {
         <CardContent>
           <div className="flex h-[500px] flex-col rounded-lg border">
             {/* Messages */}
-            <div className="flex-1 overflow-y-auto p-4 space-y-4">
+            <div ref={messagesContainerRef} className="flex-1 overflow-y-auto p-4 space-y-4">
               {messages.map((message, i) => (
                 <motion.div
                   key={i}
@@ -187,7 +193,7 @@ export function ChatInterface() {
                   value={input}
                   onChange={(e) => setInput(e.target.value)}
                   onKeyPress={handleKeyPress}
-                  placeholder="Ask about the RAG system..."
+                  placeholder="Ask about anything"
                   className="flex-1 rounded-md border bg-background px-3 py-2 text-sm focus-visible:outline-none focus-visible:ring-1 focus-visible:ring-ring"
                   disabled={isLoading}
                 />
@@ -195,20 +201,7 @@ export function ChatInterface() {
                   <Send className="h-4 w-4" />
                 </Button>
               </div>
-              <p className="mt-2 text-xs text-muted-foreground">
-                Try asking about: <strong>architecture</strong>, <strong>features</strong>,{' '}
-                <strong>RAG</strong>, <strong>tech stack</strong>, or <strong>API</strong>
-              </p>
             </div>
-          </div>
-
-          {/* Demo Notice */}
-          <div className="mt-4 rounded-lg border border-primary/20 bg-primary/5 p-3">
-            <p className="text-xs text-muted-foreground">
-              <strong>Note:</strong> This is a frontend demo with mock responses. The production
-              version integrates with real LLM APIs and supports streaming, document upload, and
-              advanced RAG features.
-            </p>
           </div>
         </CardContent>
       </Card>

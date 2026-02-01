@@ -9,6 +9,7 @@ import { Github, ExternalLink, ArrowLeft } from 'lucide-react';
 import Link from 'next/link';
 import { QLoRADemo } from '@/components/projects/QLoRADemo';
 import { ChatInterface } from '@/components/projects/ChatInterface';
+import { RAGPipelineOverview } from '@/components/projects/RAGPipelineOverview';
 
 interface ProjectPageProps {
   params: Promise<{ slug: string }>;
@@ -110,13 +111,22 @@ export default async function ProjectPage({ params }: ProjectPageProps) {
             </CardContent>
           </Card>
 
-          {/* Interactive Demo */}
+          {/* Interactive Demo - Most important, show first */}
           {project.demoType === 'visualization' && project.slug === '4bit-qlora-post-training' && (
             <QLoRADemo stats={project.stats} />
           )}
 
           {project.demoType === 'interactive' && project.slug === 'rag-chatbot' && (
-            <ChatInterface />
+            <div className="mb-12">
+              <ChatInterface />
+            </div>
+          )}
+
+          {/* RAG Technical Overview */}
+          {project.slug === 'rag-chatbot' && (
+            <div className="mb-12">
+              <RAGPipelineOverview stats={project.stats} />
+            </div>
           )}
 
           {/* Additional Stats/Info */}

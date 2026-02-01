@@ -1,7 +1,7 @@
 'use client';
 
 import Link from 'next/link';
-import { ArrowRight, Download } from 'lucide-react';
+import { ArrowRight } from 'lucide-react';
 import { Button } from '@/components/ui/button';
 import { resume, getFeaturedProjects } from '@/data';
 import { motion } from 'framer-motion';
@@ -32,12 +32,6 @@ export function Hero() {
             <Button asChild size="lg" className="bg-gradient-to-r from-purple-600 to-blue-600 hover:from-purple-700 hover:to-blue-700">
               <Link href="/projects">
                 View Projects <ArrowRight className="ml-2 h-4 w-4" />
-              </Link>
-            </Button>
-            <Button asChild variant="outline" size="lg" className="border-purple-200 text-purple-700 hover:bg-purple-50">
-              <Link href="/resume-luopeng-cv.txt" target="_blank" rel="noopener noreferrer">
-                <Download className="mr-2 h-4 w-4" />
-                Download Resume
               </Link>
             </Button>
           </div>
